@@ -91,6 +91,11 @@
 						</option>
 					{/foreach}
 				</select>
+				{if empty($unpublishedIssues)}
+					<p style="margin-top: 8px; margin-bottom: 0; font-size: 0.82rem; color: #b45309; font-style: italic;">
+						{translate key="plugins.generic.inPressPlugin.settings.noUnpublishedIssues"}
+					</p>
+				{/if}
 			</div>
 		</div>
 
@@ -185,6 +190,14 @@
 
 		$(function() {
 			var $form = $('#inPressSettingsForm');
+
+			$form.find('input[name="detectionMode"]').on('change', function() {
+				if ($(this).val() === 'specific_issue') {
+					$('#designatedIssueWrap').slideDown(150);
+				} else {
+					$('#designatedIssueWrap').slideUp(150);
+				}
+			});
 
 			$('#inPressCancelBtn').on('click', function() {
 				var modal = $form.closest('.ui-dialog-content');

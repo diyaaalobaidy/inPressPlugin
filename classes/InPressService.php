@@ -95,68 +95,121 @@ class InPressService
                 return [];
             }
 
+            // Mode 3 check: If specific issue mode is selected without a valid issue, return empty
+            if ($mode === 'specific_issue' && $designatedIssueId <= 0) {
+                return [];
+            }
+
+            // Gather unpublished and published issue IDs for this journal context
+            $unpublishedIssueIds = [];
+            $publishedIssueIds = [];
+            if (Schema::hasTable('issues')) {
+                $issues = DB::table('issues')
+                    ->where('journal_id', $contextId)
+                    ->select('issue_id', 'published')
+                    ->get();
+                foreach ($issues as $iss) {
+                    if ((int) $iss->published === 1) {
+                        $publishedIssueIds[] = (int) $iss->issue_id;
+                    } else {
+                        $unpublishedIssueIds[] = (int) $iss->issue_id;
+                    }
+                }
+            }
+
+            $unpublishedIssueStrings = array_map('strval', $unpublishedIssueIds);
+            $publishedIssueStrings = array_map('strval', $publishedIssueIds);
+
+            $hasDirectIssueColumn = Schema::hasColumn('publications', 'issue_id');
+
+            // Build base query on active, non-declined, non-published submissions
             $query = DB::table('submissions as s')
                 ->join('publications as p', 'p.publication_id', '=', 's.current_publication_id')
                 ->where('s.context_id', $contextId)
-                ->where('s.status', '!=', 4); // Exclude declined
+                ->where('s.status', '!=', 4)  // Exclude STATUS_DECLINED
+                ->where('s.status', '!=', 3)  // Exclude STATUS_PUBLISHED
+                ->where('p.status', '!=', 3); // Exclude published publications
 
-            // Join issues either via publications column or publication_settings
+            // Join publication_settings for issueId setting
             $query->leftJoin('publication_settings as ps_issue', function ($join) {
                 $join->on('ps_issue.publication_id', '=', 'p.publication_id')
                      ->where('ps_issue.setting_name', '=', 'issueId');
             });
 
-            // Check if publications table has issue_id column directly
-            $hasDirectIssueColumn = Schema::hasColumn('publications', 'issue_id');
-
-            if ($hasDirectIssueColumn) {
-                $query->leftJoin('issues as iss', function ($join) {
-                    $join->on('iss.issue_id', '=', 'p.issue_id')
-                         ->orWhereRaw('iss.issue_id = CAST(ps_issue.setting_value AS UNSIGNED)');
-                });
-            } else {
-                $query->leftJoin('issues as iss', function ($join) {
-                    $join->whereRaw('iss.issue_id = CAST(ps_issue.setting_value AS UNSIGNED)');
+            // Always strictly exclude any submissions assigned to an already published issue
+            if (!empty($publishedIssueIds)) {
+                $query->where(function ($q) use ($publishedIssueIds, $publishedIssueStrings, $hasDirectIssueColumn) {
+                    if ($hasDirectIssueColumn) {
+                        $q->whereNotIn('p.issue_id', $publishedIssueIds)
+                          ->orWhereNull('p.issue_id');
+                    }
+                    $q->where(function ($subQ) use ($publishedIssueStrings) {
+                        $subQ->whereNotIn('ps_issue.setting_value', $publishedIssueStrings)
+                             ->orWhereNull('ps_issue.setting_value');
+                    });
                 });
             }
 
-            // Always exclude submissions already in an officially published issue
-            $query->where(function ($q) {
-                $q->whereNull('iss.issue_id')
-                  ->orWhere('iss.published', '=', 0);
-            });
-
-            if ($mode === 'specific_issue' && $designatedIssueId > 0) {
-                // Must be assigned to the designated forthcoming issue
-                if ($hasDirectIssueColumn) {
-                    $query->where(function ($q) use ($designatedIssueId) {
-                        $q->where('p.issue_id', '=', $designatedIssueId)
-                          ->orWhere('ps_issue.setting_value', '=', (string) $designatedIssueId);
-                    });
-                } else {
-                    $query->where('ps_issue.setting_value', '=', (string) $designatedIssueId);
-                }
+            // Apply selected detection mode filter
+            if ($mode === 'specific_issue') {
+                // Must be assigned specifically to the designated issue
+                $query->where(function ($q) use ($designatedIssueId, $hasDirectIssueColumn) {
+                    if ($hasDirectIssueColumn) {
+                        $q->where('p.issue_id', '=', $designatedIssueId);
+                    }
+                    $q->orWhere('ps_issue.setting_value', '=', (string) $designatedIssueId);
+                });
             } elseif ($mode === 'all_accepted_production') {
-                // Either scheduled, in unpublished issue, or in production stage (stage_id = 5)
-                $query->where(function ($q) {
+                // All accepted submissions in production/copyediting or scheduled in future issues
+                $query->where(function ($q) use ($unpublishedIssueIds, $unpublishedIssueStrings, $hasDirectIssueColumn) {
+                    // Scheduled status
                     $q->where('s.status', '=', 5) // STATUS_SCHEDULED
-                      ->orWhere('p.status', '=', 5)
-                      ->orWhere('s.stage_id', '=', 5) // WORKFLOW_STAGE_ID_PRODUCTION
-                      ->orWhere(function ($subQ) {
-                          $subQ->whereNotNull('iss.issue_id')
-                               ->where('iss.published', '=', 0);
-                      });
+                      ->orWhere('p.status', '=', 5);
+
+                    // Or assigned to any unpublished issue
+                    if (!empty($unpublishedIssueIds)) {
+                        if ($hasDirectIssueColumn) {
+                            $q->orWhereIn('p.issue_id', $unpublishedIssueIds);
+                        }
+                        $q->orWhereIn('ps_issue.setting_value', $unpublishedIssueStrings);
+                    }
+
+                    // Or in Production workflow stage
+                    $q->orWhere('s.stage_id', '=', 5); // WORKFLOW_STAGE_ID_PRODUCTION
+
+                    // Or accepted editorial decision in edit_decisions
+                    if (Schema::hasTable('edit_decisions')) {
+                        $q->orWhereExists(function ($subQ) {
+                            $subQ->select(DB::raw(1))
+                                 ->from('edit_decisions as ed')
+                                 ->whereColumn('ed.submission_id', 's.submission_id')
+                                 ->where('ed.decision', '=', 1); // SUBMISSION_EDITOR_DECISION_ACCEPT
+                        });
+                    }
+
+                    // Or has explicit dateAccepted setting
+                    $q->orWhereExists(function ($subQ) {
+                        $subQ->select(DB::raw(1))
+                             ->from('publication_settings as ps_acc')
+                             ->whereColumn('ps_acc.publication_id', 'p.publication_id')
+                             ->where('ps_acc.setting_name', '=', 'dateAccepted')
+                             ->whereNotNull('ps_acc.setting_value')
+                             ->where('ps_acc.setting_value', '!=', '');
+                    });
                 });
             } else {
                 // Default: 'scheduled_unpublished'
-                // Must be scheduled in an unpublished issue OR have STATUS_SCHEDULED
-                $query->where(function ($q) {
+                // Must be scheduled or assigned to an unpublished / future issue
+                $query->where(function ($q) use ($unpublishedIssueIds, $unpublishedIssueStrings, $hasDirectIssueColumn) {
                     $q->where('s.status', '=', 5) // STATUS_SCHEDULED
-                      ->orWhere('p.status', '=', 5)
-                      ->orWhere(function ($subQ) {
-                          $subQ->whereNotNull('iss.issue_id')
-                               ->where('iss.published', '=', 0);
-                      });
+                      ->orWhere('p.status', '=', 5);
+
+                    if (!empty($unpublishedIssueIds)) {
+                        if ($hasDirectIssueColumn) {
+                            $q->orWhereIn('p.issue_id', $unpublishedIssueIds);
+                        }
+                        $q->orWhereIn('ps_issue.setting_value', $unpublishedIssueStrings);
+                    }
                 });
             }
 
@@ -580,20 +633,26 @@ class InPressService
         $issues = [];
         try {
             if (class_exists(Repo::class) && method_exists(Repo::class, 'issue')) {
-                $collector = Repo::issue()->getCollector()
-                    ->filterByContextIds([$contextId])
-                    ->filterByPublished(false);
-                $rawIssues = $collector->getMany();
-                foreach ($rawIssues as $issue) {
-                    $issues[] = [
-                        'id' => (int) $issue->getId(),
-                        'identification' => $this->formatIssueIdentification($issue),
-                        'year' => $issue->getYear(),
-                        'volume' => $issue->getVolume(),
-                        'number' => $issue->getNumber(),
-                    ];
+                try {
+                    $collector = Repo::issue()->getCollector()
+                        ->filterByContextIds([$contextId])
+                        ->filterByPublished(false);
+                    $rawIssues = $collector->getMany();
+                    foreach ($rawIssues as $issue) {
+                        $issues[] = [
+                            'id' => (int) $issue->getId(),
+                            'identification' => $this->formatIssueIdentification($issue),
+                            'year' => $issue->getYear(),
+                            'volume' => $issue->getVolume(),
+                            'number' => $issue->getNumber(),
+                        ];
+                    }
+                } catch (\Throwable $e) {
+                    // Fall back to direct DB extraction below
                 }
-            } elseif (Schema::hasTable('issues')) {
+            }
+
+            if (empty($issues) && Schema::hasTable('issues')) {
                 $rows = DB::table('issues')
                     ->where('journal_id', $contextId)
                     ->where('published', 0)
@@ -603,10 +662,9 @@ class InPressService
                     ->get();
 
                 foreach ($rows as $r) {
-                    $ident = sprintf('Vol. %s No. %s (%s)', $r->volume ?: '-', $r->number ?: '-', $r->year ?: '-');
                     $issues[] = [
                         'id' => (int) $r->issue_id,
-                        'identification' => $ident,
+                        'identification' => $this->formatIssueIdentification($r),
                         'year' => $r->year,
                         'volume' => $r->volume,
                         'number' => $r->number,

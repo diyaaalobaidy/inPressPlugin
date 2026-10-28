@@ -124,6 +124,9 @@ msgstr "العدد القادم المخصص"
 msgid "plugins.generic.inPressPlugin.settings.designatedIssueSelect"
 msgstr "-- اختر عدداً غير منشور --"
 
+msgid "plugins.generic.inPressPlugin.settings.noUnpublishedIssues"
+msgstr "ملاحظة: لا توجد أعداد قادمة / غير منشورة حالياً في هذه المجلة. يمكنك إنشاء عدد جديد من تبويب الأعداد > أعداد قادمة."
+
 msgid "plugins.generic.inPressPlugin.settings.showGalleys"
 msgstr "إتاحة تحميل ملفات المسودات (PDF / تنسيقات أخرى)"
 

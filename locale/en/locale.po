@@ -124,6 +124,9 @@ msgstr "Designated Forthcoming Issue"
 msgid "plugins.generic.inPressPlugin.settings.designatedIssueSelect"
 msgstr "-- Select an unpublished issue --"
 
+msgid "plugins.generic.inPressPlugin.settings.noUnpublishedIssues"
+msgstr "Note: No unpublished / future issues currently exist for this journal. You can create a future issue in Issues > Future Issues."
+
 msgid "plugins.generic.inPressPlugin.settings.showGalleys"
 msgstr "Allow downloading Galley Proofs (PDF / Other formats)"
 
