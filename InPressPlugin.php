@@ -130,6 +130,45 @@ class InPressPlugin extends GenericPlugin
     }
 
     /**
+     * @copydoc Plugin::getSetting()
+     *
+     * Provides default fallback values when settings have not yet been stored in the database.
+     */
+    public function getSetting($contextId, $name, $default = null)
+    {
+        $val = parent::getSetting($contextId, $name);
+        if ($val === null) {
+            $defaults = [
+                'inPressEnabled' => true,
+                'pageTitle' => '',
+                'badgeText' => '',
+                'introNotice' => '',
+                'detectionMode' => 'scheduled_unpublished',
+                'designatedIssueId' => 0,
+                'showGalleys' => true,
+                'proofNotice' => '',
+                'showAbstract' => true,
+                'showExpectedIssue' => true,
+                'showAcceptanceDate' => true,
+                'showDoi' => true,
+                'showOnHomepage' => true,
+                'homepageItemCount' => 3,
+                'enableFeed' => true,
+            ];
+
+            if ($default !== null) {
+                return $default;
+            }
+
+            if (array_key_exists($name, $defaults)) {
+                return $defaults[$name];
+            }
+        }
+
+        return $val;
+    }
+
+    /**
      * Hook into TemplateManager to inject CSS/JS and optional homepage block
      */
     public function callbackTemplateDisplay(string $hookName, array $args): bool
@@ -167,8 +206,8 @@ class InPressPlugin extends GenericPlugin
         ], true);
 
         if ($isIndexTemplate
-            && $this->getSetting($contextId, 'inPressEnabled', true)
-            && $this->getSetting($contextId, 'showOnHomepage', true)
+            && (bool) $this->getSetting($contextId, 'inPressEnabled')
+            && (bool) $this->getSetting($contextId, 'showOnHomepage')
         ) {
             $service = new InPressService($this);
             $allArticles = $service->getInPressSubmissions($contextId);
@@ -187,8 +226,10 @@ class InPressPlugin extends GenericPlugin
                     'inPressTitle' => $pageTitle,
                     'inPressBadgeText' => $badgeText,
                     'inPressProofNotice' => $proofNotice,
-                    'inPressShowGalleys' => (bool) $this->getSetting($contextId, 'showGalleys', true),
-                    'inPressShowExpectedIssue' => (bool) $this->getSetting($contextId, 'showExpectedIssue', true),
+                    'inPressShowGalleys' => (bool) $this->getSetting($contextId, 'showGalleys'),
+                    'inPressShowExpectedIssue' => (bool) $this->getSetting($contextId, 'showExpectedIssue'),
+                    'inPressShowAcceptanceDate' => (bool) $this->getSetting($contextId, 'showAcceptanceDate'),
+                    'inPressShowDoi' => (bool) $this->getSetting($contextId, 'showDoi'),
                 ]);
 
                 // Append to additionalHomeContent so standard OJS themes automatically render it

@@ -642,13 +642,13 @@ class InPressService
     /**
      * Format academic citation for In Press articles
      */
-    public function formatCitation(array $article, $journal): string
+    public function formatCitation(array $article, $journal, bool $showDoi = true): string
     {
         $authors = !empty($article['authorString']) ? $article['authorString'] : 'Unknown';
         $year = !empty($article['dateAccepted']) ? date('Y', strtotime($article['dateAccepted'])) : date('Y');
         $title = rtrim($article['fullTitle'], '.');
         $journalName = $journal ? ($journal->getLocalizedName() ?: $journal->getData('name')) : 'Journal';
-        $doiPart = !empty($article['doiUrl']) ? ' ' . $article['doiUrl'] : '';
+        $doiPart = ($showDoi && !empty($article['doiUrl'])) ? ' ' . $article['doiUrl'] : '';
 
         return sprintf('%s (%s). %s. %s, In Press.%s', $authors, $year, $title, $journalName, $doiPart);
     }

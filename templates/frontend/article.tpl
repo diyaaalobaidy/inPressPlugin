@@ -82,7 +82,7 @@
 			{* Left Column: Abstract & Galleys *}
 			<div class="pkp_inpress_main_col">
 				
-				{if !empty($article.abstract)}
+				{if $showAbstract && !empty($article.abstract)}
 					<section class="pkp_inpress_section pkp_inpress_abstract_section">
 						<h2 class="pkp_inpress_section_title">{translate key="article.abstract"}</h2>
 						<div class="pkp_inpress_full_abstract">
@@ -159,7 +159,7 @@
 							</div>
 						{/if}
 
-						{if $article.dateAccepted}
+						{if $showAcceptanceDate && $article.dateAccepted}
 							<div class="pkp_inpress_meta_row">
 								<dt>{translate key="plugins.generic.inPressPlugin.dateAccepted"}:</dt>
 								<dd><time datetime="{$article.dateAccepted|escape}">{$article.dateAccepted|escape}</time></dd>
@@ -173,7 +173,7 @@
 							</div>
 						{/if}
 
-						{if !empty($article.doiUrl)}
+						{if $showDoi && !empty($article.doiUrl)}
 							<div class="pkp_inpress_meta_row">
 								<dt>{translate key="plugins.generic.inPressPlugin.doi"}:</dt>
 								<dd><a href="{$article.doiUrl|escape}" target="_blank" rel="noopener">{$article.doiUrl|escape}</a></dd>

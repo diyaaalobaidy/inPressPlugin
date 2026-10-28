@@ -57,7 +57,7 @@ class InPressFrontendHandler extends Handler
         $contextId = (int) $context->getId();
 
         // Check if plugin is enabled
-        if ($this->plugin && !$this->plugin->getSetting($contextId, 'inPressEnabled', true)) {
+        if ($this->plugin && !(bool) $this->plugin->getSetting($contextId, 'inPressEnabled')) {
             $request->redirect(null, 'index');
             return;
         }
@@ -77,12 +77,12 @@ class InPressFrontendHandler extends Handler
         $proofNotice = $this->plugin->getSetting($contextId, 'proofNotice')
             ?: __('plugins.generic.inPressPlugin.proofNotice');
 
-        $showGalleys = (bool) $this->plugin->getSetting($contextId, 'showGalleys', true);
-        $showAbstract = (bool) $this->plugin->getSetting($contextId, 'showAbstract', true);
-        $showExpectedIssue = (bool) $this->plugin->getSetting($contextId, 'showExpectedIssue', true);
-        $showAcceptanceDate = (bool) $this->plugin->getSetting($contextId, 'showAcceptanceDate', true);
-        $showDoi = (bool) $this->plugin->getSetting($contextId, 'showDoi', true);
-        $enableFeed = (bool) $this->plugin->getSetting($contextId, 'enableFeed', true);
+        $showGalleys = (bool) $this->plugin->getSetting($contextId, 'showGalleys');
+        $showAbstract = (bool) $this->plugin->getSetting($contextId, 'showAbstract');
+        $showExpectedIssue = (bool) $this->plugin->getSetting($contextId, 'showExpectedIssue');
+        $showAcceptanceDate = (bool) $this->plugin->getSetting($contextId, 'showAcceptanceDate');
+        $showDoi = (bool) $this->plugin->getSetting($contextId, 'showDoi');
+        $enableFeed = (bool) $this->plugin->getSetting($contextId, 'enableFeed');
 
         $feedUrl = $enableFeed ? $request->getDispatcher()->url(
             $request,
@@ -148,16 +148,20 @@ class InPressFrontendHandler extends Handler
         $this->setupTemplate($request);
         $templateMgr = PKPTemplateManager::getManager($request);
 
-        $citation = $this->service->formatCitation($article, $context);
         $badgeText = $this->plugin->getSetting($contextId, 'badgeText')
             ?: __('plugins.generic.inPressPlugin.badgeText');
         $proofNotice = $this->plugin->getSetting($contextId, 'proofNotice')
             ?: __('plugins.generic.inPressPlugin.proofNotice');
-        $showGalleys = (bool) $this->plugin->getSetting($contextId, 'showGalleys', true);
-        $showExpectedIssue = (bool) $this->plugin->getSetting($contextId, 'showExpectedIssue', true);
+        $showGalleys = (bool) $this->plugin->getSetting($contextId, 'showGalleys');
+        $showAbstract = (bool) $this->plugin->getSetting($contextId, 'showAbstract');
+        $showExpectedIssue = (bool) $this->plugin->getSetting($contextId, 'showExpectedIssue');
+        $showAcceptanceDate = (bool) $this->plugin->getSetting($contextId, 'showAcceptanceDate');
+        $showDoi = (bool) $this->plugin->getSetting($contextId, 'showDoi');
+
+        $citation = $this->service->formatCitation($article, $context, $showDoi);
 
         // Inject Google Scholar & Dublin Core meta tags for forthcoming indexing
-        $this->injectMetaTags($templateMgr, $article, $context, $request);
+        $this->injectMetaTags($templateMgr, $article, $context, $request, $showDoi, $showAcceptanceDate, $showGalleys);
 
         // Inject assets
         $templateMgr->addStyleSheet(
@@ -179,7 +183,10 @@ class InPressFrontendHandler extends Handler
             'badgeText' => $badgeText,
             'proofNotice' => $proofNotice,
             'showGalleys' => $showGalleys,
+            'showAbstract' => $showAbstract,
             'showExpectedIssue' => $showExpectedIssue,
+            'showAcceptanceDate' => $showAcceptanceDate,
+            'showDoi' => $showDoi,
             'inPressListUrl' => $request->getDispatcher()->url($request, PKPApplication::ROUTE_PAGE, null, 'inpress'),
             'currentContext' => $context,
         ]);
@@ -203,7 +210,7 @@ class InPressFrontendHandler extends Handler
         }
 
         // Verify that galleys are enabled in settings
-        if (!$this->plugin->getSetting($contextId, 'showGalleys', true)) {
+        if (!(bool) $this->plugin->getSetting($contextId, 'showGalleys')) {
             $request->redirect(null, 'inpress', 'view', [$submissionId]);
             return;
         }
@@ -295,7 +302,7 @@ class InPressFrontendHandler extends Handler
     /**
      * Inject Google Scholar & Dublin Core metadata into HTML head
      */
-    protected function injectMetaTags($templateMgr, array $article, $context, $request): void
+    protected function injectMetaTags($templateMgr, array $article, $context, $request, bool $showDoi = true, bool $showAcceptanceDate = true, bool $showGalleys = true): void
     {
         $journalTitle = $context->getLocalizedName() ?: $context->getData('name');
         $onlineIssn = $context->getData('onlineIssn') ?: $context->getData('printIssn');
@@ -303,18 +310,21 @@ class InPressFrontendHandler extends Handler
         $tags = [
             '<meta name="citation_title" content="' . htmlspecialchars($article['fullTitle']) . '" />',
             '<meta name="citation_journal_title" content="' . htmlspecialchars($journalTitle) . '" />',
-            '<meta name="citation_publication_date" content="' . htmlspecialchars($article['dateAccepted'] ?: date('Y-m-d')) . '" />',
             '<meta name="dc.title" content="' . htmlspecialchars($article['fullTitle']) . '" />',
-            '<meta name="dc.date" content="' . htmlspecialchars($article['dateAccepted'] ?: date('Y-m-d')) . '" />',
             '<meta name="dc.type" content="Text.Article" />',
             '<meta name="dc.status" content="In Press" />',
         ];
+
+        if ($showAcceptanceDate && !empty($article['dateAccepted'])) {
+            $tags[] = '<meta name="citation_publication_date" content="' . htmlspecialchars($article['dateAccepted']) . '" />';
+            $tags[] = '<meta name="dc.date" content="' . htmlspecialchars($article['dateAccepted']) . '" />';
+        }
 
         if ($onlineIssn) {
             $tags[] = '<meta name="citation_issn" content="' . htmlspecialchars($onlineIssn) . '" />';
         }
 
-        if (!empty($article['doi'])) {
+        if ($showDoi && !empty($article['doi'])) {
             $tags[] = '<meta name="citation_doi" content="' . htmlspecialchars($article['doi']) . '" />';
             $tags[] = '<meta name="dc.identifier" content="' . htmlspecialchars($article['doi']) . '" />';
         }
@@ -330,7 +340,7 @@ class InPressFrontendHandler extends Handler
             }
         }
 
-        if (!empty($article['galleys'])) {
+        if ($showGalleys && !empty($article['galleys'])) {
             foreach ($article['galleys'] as $g) {
                 if ($g['isPdf'] && !empty($g['downloadUrl'])) {
                     $tags[] = '<meta name="citation_pdf_url" content="' . htmlspecialchars($g['downloadUrl']) . '" />';

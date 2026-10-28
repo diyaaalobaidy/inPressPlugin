@@ -24,7 +24,7 @@
 					{if $art.sectionTitle}
 						<span class="pkp_inpress_badge pkp_inpress_badge_section">{$art.sectionTitle|escape}</span>
 					{/if}
-					{if $art.dateAccepted}
+					{if $inPressShowAcceptanceDate && $art.dateAccepted}
 						<span class="pkp_inpress_home_date">{$art.dateAccepted|escape}</span>
 					{/if}
 				</div>

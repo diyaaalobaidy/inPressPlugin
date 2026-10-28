@@ -19,6 +19,7 @@
 		<div class="pkp_form_section" style="margin-bottom: 22px;">
 			<div class="pkp_form_row" style="margin-bottom: 16px;">
 				<label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+					<input type="hidden" name="inPressEnabled" value="0" />
 					<input type="checkbox" name="inPressEnabled" value="1" {if $inPressEnabled}checked="checked"{/if} style="width: 18px; height: 18px;" />
 					<span>{translate key="plugins.generic.inPressPlugin.settings.enabled"}</span>
 				</label>
@@ -93,37 +94,43 @@
 			</div>
 		</div>
 
-		{* Section 3: Display & Proofs *}
+		{* Section 3: Display Options & Proofs *}
 		<div class="pkp_form_section" style="margin-bottom: 22px;">
 			<h4 style="margin-top: 0; margin-bottom: 12px; color: #334155;">Display Options & Galleys</h4>
 
 			<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
 				<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+					<input type="hidden" name="showGalleys" value="0" />
 					<input type="checkbox" name="showGalleys" value="1" {if $showGalleys}checked="checked"{/if} />
 					<span>{translate key="plugins.generic.inPressPlugin.settings.showGalleys"}</span>
 				</label>
 
 				<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+					<input type="hidden" name="showAbstract" value="0" />
 					<input type="checkbox" name="showAbstract" value="1" {if $showAbstract}checked="checked"{/if} />
 					<span>{translate key="plugins.generic.inPressPlugin.settings.showAbstract"}</span>
 				</label>
 
 				<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+					<input type="hidden" name="showExpectedIssue" value="0" />
 					<input type="checkbox" name="showExpectedIssue" value="1" {if $showExpectedIssue}checked="checked"{/if} />
 					<span>{translate key="plugins.generic.inPressPlugin.settings.showExpectedIssue"}</span>
 				</label>
 
 				<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+					<input type="hidden" name="showAcceptanceDate" value="0" />
 					<input type="checkbox" name="showAcceptanceDate" value="1" {if $showAcceptanceDate}checked="checked"{/if} />
 					<span>{translate key="plugins.generic.inPressPlugin.settings.showAcceptanceDate"}</span>
 				</label>
 
 				<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+					<input type="hidden" name="showDoi" value="0" />
 					<input type="checkbox" name="showDoi" value="1" {if $showDoi}checked="checked"{/if} />
 					<span>{translate key="plugins.generic.inPressPlugin.settings.showDoi"}</span>
 				</label>
 
 				<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+					<input type="hidden" name="enableFeed" value="0" />
 					<input type="checkbox" name="enableFeed" value="1" {if $enableFeed}checked="checked"{/if} />
 					<span>{translate key="plugins.generic.inPressPlugin.settings.enableFeed"}</span>
 				</label>
@@ -143,6 +150,7 @@
 
 			<div style="margin-bottom: 14px;">
 				<label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+					<input type="hidden" name="showOnHomepage" value="0" />
 					<input type="checkbox" name="showOnHomepage" value="1" {if $showOnHomepage}checked="checked"{/if} />
 					<span>{translate key="plugins.generic.inPressPlugin.settings.showOnHomepage"}</span>
 				</label>
@@ -158,7 +166,7 @@
 
 		{* Actions *}
 		<div class="pkp_inpress_settings_footer" style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
-			<button type="button" class="pkp_button" onclick="pkp.classes.Handler.getHandler($('#inPressSettingsForm').closest('.pkp_modal_panel')).cancel()" style="padding: 8px 18px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px; cursor: pointer;">
+			<button type="button" class="pkp_button" id="inPressCancelBtn" style="padding: 8px 18px; border: 1px solid #cbd5e1; background: #fff; border-radius: 4px; cursor: pointer;">
 				{translate key="common.cancel"}
 			</button>
 			<button type="submit" class="pkp_button pkp_button_primary" style="padding: 8px 22px; background: #006699; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">
@@ -176,8 +184,61 @@
 		}
 
 		$(function() {
-			$('#inPressSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler', {
-				baseUrl: {$baseUrl|json_encode}
+			var $form = $('#inPressSettingsForm');
+
+			$('#inPressCancelBtn').on('click', function() {
+				var modal = $form.closest('.ui-dialog-content');
+				if (modal.length) {
+					modal.dialog('close');
+				} else {
+					var panel = $form.closest('.pkp_modal_panel');
+					if (panel.length && window.pkp && pkp.classes && pkp.classes.Handler) {
+						pkp.classes.Handler.getHandler(panel).cancel();
+					}
+				}
+			});
+
+			$form.on('submit', function(e) {
+				e.preventDefault();
+				var form = this;
+				var formData = new FormData(form);
+				var $btn = $form.find('button[type="submit"]');
+				var origText = $btn.text();
+				$btn.prop('disabled', true).text('Saving...');
+
+				$.ajax({
+					url: form.action,
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function(response) {
+						$btn.prop('disabled', false).text(origText);
+						if (response && response.status === true) {
+							if (window.pkp && pkp.eventBus) {
+								pkp.eventBus.$emit('notify', '{translate key="plugins.generic.inPressPlugin.settings.saved"}', 'success');
+							} else {
+								alert('{translate key="plugins.generic.inPressPlugin.settings.saved"}');
+							}
+							var modal = $form.closest('.ui-dialog-content');
+							if (modal.length) {
+								modal.dialog('close');
+							} else {
+								var panel = $form.closest('.pkp_modal_panel');
+								if (panel.length && window.pkp && pkp.classes && pkp.classes.Handler) {
+									pkp.classes.Handler.getHandler(panel).cancel();
+								}
+							}
+						} else {
+							var msg = (response && response.content) ? response.content : 'Failed to save settings.';
+							alert(msg);
+						}
+					},
+					error: function(xhr) {
+						$btn.prop('disabled', false).text(origText);
+						alert('Error saving settings: ' + (xhr.responseText || xhr.statusText));
+					}
+				});
 			});
 		});
 	</script>

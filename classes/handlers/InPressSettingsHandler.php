@@ -66,21 +66,21 @@ class InPressSettingsHandler extends Handler
         $templateMgr = PKPTemplateManager::getManager($request);
         $templateMgr->assign([
             'pluginName' => $this->plugin->getName(),
-            'inPressEnabled' => (bool) $this->plugin->getSetting($contextId, 'inPressEnabled', true),
+            'inPressEnabled' => (bool) $this->plugin->getSetting($contextId, 'inPressEnabled'),
             'pageTitle' => $this->plugin->getSetting($contextId, 'pageTitle') ?: __('plugins.generic.inPressPlugin.pageTitle'),
             'badgeText' => $this->plugin->getSetting($contextId, 'badgeText') ?: __('plugins.generic.inPressPlugin.badgeText'),
             'introNotice' => $this->plugin->getSetting($contextId, 'introNotice') ?: __('plugins.generic.inPressPlugin.introNotice'),
             'detectionMode' => $this->plugin->getSetting($contextId, 'detectionMode') ?: 'scheduled_unpublished',
-            'designatedIssueId' => (int) $this->plugin->getSetting($contextId, 'designatedIssueId', 0),
-            'showGalleys' => (bool) $this->plugin->getSetting($contextId, 'showGalleys', true),
+            'designatedIssueId' => (int) $this->plugin->getSetting($contextId, 'designatedIssueId'),
+            'showGalleys' => (bool) $this->plugin->getSetting($contextId, 'showGalleys'),
             'proofNotice' => $this->plugin->getSetting($contextId, 'proofNotice') ?: __('plugins.generic.inPressPlugin.proofNotice'),
-            'showAbstract' => (bool) $this->plugin->getSetting($contextId, 'showAbstract', true),
-            'showExpectedIssue' => (bool) $this->plugin->getSetting($contextId, 'showExpectedIssue', true),
-            'showAcceptanceDate' => (bool) $this->plugin->getSetting($contextId, 'showAcceptanceDate', true),
-            'showDoi' => (bool) $this->plugin->getSetting($contextId, 'showDoi', true),
-            'showOnHomepage' => (bool) $this->plugin->getSetting($contextId, 'showOnHomepage', true),
+            'showAbstract' => (bool) $this->plugin->getSetting($contextId, 'showAbstract'),
+            'showExpectedIssue' => (bool) $this->plugin->getSetting($contextId, 'showExpectedIssue'),
+            'showAcceptanceDate' => (bool) $this->plugin->getSetting($contextId, 'showAcceptanceDate'),
+            'showDoi' => (bool) $this->plugin->getSetting($contextId, 'showDoi'),
+            'showOnHomepage' => (bool) $this->plugin->getSetting($contextId, 'showOnHomepage'),
             'homepageItemCount' => (int) ($this->plugin->getSetting($contextId, 'homepageItemCount') ?: 3),
-            'enableFeed' => (bool) $this->plugin->getSetting($contextId, 'enableFeed', true),
+            'enableFeed' => (bool) $this->plugin->getSetting($contextId, 'enableFeed'),
             'unpublishedIssues' => $unpublishedIssues,
         ]);
 
@@ -95,21 +95,21 @@ class InPressSettingsHandler extends Handler
         $context = $request->getContext();
         $contextId = (int) $context->getId();
 
-        $this->plugin->updateSetting($contextId, 'inPressEnabled', (bool) $request->getUserVar('inPressEnabled'));
-        $this->plugin->updateSetting($contextId, 'pageTitle', (string) $request->getUserVar('pageTitle'));
-        $this->plugin->updateSetting($contextId, 'badgeText', (string) $request->getUserVar('badgeText'));
-        $this->plugin->updateSetting($contextId, 'introNotice', (string) $request->getUserVar('introNotice'));
-        $this->plugin->updateSetting($contextId, 'detectionMode', (string) $request->getUserVar('detectionMode') ?: 'scheduled_unpublished');
-        $this->plugin->updateSetting($contextId, 'designatedIssueId', (int) $request->getUserVar('designatedIssueId'));
-        $this->plugin->updateSetting($contextId, 'showGalleys', (bool) $request->getUserVar('showGalleys'));
-        $this->plugin->updateSetting($contextId, 'proofNotice', (string) $request->getUserVar('proofNotice'));
-        $this->plugin->updateSetting($contextId, 'showAbstract', (bool) $request->getUserVar('showAbstract'));
-        $this->plugin->updateSetting($contextId, 'showExpectedIssue', (bool) $request->getUserVar('showExpectedIssue'));
-        $this->plugin->updateSetting($contextId, 'showAcceptanceDate', (bool) $request->getUserVar('showAcceptanceDate'));
-        $this->plugin->updateSetting($contextId, 'showDoi', (bool) $request->getUserVar('showDoi'));
-        $this->plugin->updateSetting($contextId, 'showOnHomepage', (bool) $request->getUserVar('showOnHomepage'));
-        $this->plugin->updateSetting($contextId, 'homepageItemCount', max(1, min(20, (int) $request->getUserVar('homepageItemCount'))));
-        $this->plugin->updateSetting($contextId, 'enableFeed', (bool) $request->getUserVar('enableFeed'));
+        $this->plugin->updateSetting($contextId, 'inPressEnabled', (bool) $request->getUserVar('inPressEnabled'), 'bool');
+        $this->plugin->updateSetting($contextId, 'pageTitle', (string) $request->getUserVar('pageTitle'), 'string');
+        $this->plugin->updateSetting($contextId, 'badgeText', (string) $request->getUserVar('badgeText'), 'string');
+        $this->plugin->updateSetting($contextId, 'introNotice', (string) $request->getUserVar('introNotice'), 'string');
+        $this->plugin->updateSetting($contextId, 'detectionMode', (string) $request->getUserVar('detectionMode') ?: 'scheduled_unpublished', 'string');
+        $this->plugin->updateSetting($contextId, 'designatedIssueId', (int) $request->getUserVar('designatedIssueId'), 'int');
+        $this->plugin->updateSetting($contextId, 'showGalleys', (bool) $request->getUserVar('showGalleys'), 'bool');
+        $this->plugin->updateSetting($contextId, 'proofNotice', (string) $request->getUserVar('proofNotice'), 'string');
+        $this->plugin->updateSetting($contextId, 'showAbstract', (bool) $request->getUserVar('showAbstract'), 'bool');
+        $this->plugin->updateSetting($contextId, 'showExpectedIssue', (bool) $request->getUserVar('showExpectedIssue'), 'bool');
+        $this->plugin->updateSetting($contextId, 'showAcceptanceDate', (bool) $request->getUserVar('showAcceptanceDate'), 'bool');
+        $this->plugin->updateSetting($contextId, 'showDoi', (bool) $request->getUserVar('showDoi'), 'bool');
+        $this->plugin->updateSetting($contextId, 'showOnHomepage', (bool) $request->getUserVar('showOnHomepage'), 'bool');
+        $this->plugin->updateSetting($contextId, 'homepageItemCount', max(1, min(20, (int) $request->getUserVar('homepageItemCount'))), 'int');
+        $this->plugin->updateSetting($contextId, 'enableFeed', (bool) $request->getUserVar('enableFeed'), 'bool');
 
         return new JSONMessage(true);
     }
