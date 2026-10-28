@@ -1,0 +1,155 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: InPressPlugin\n"
+"POT-Creation-Date: 2026-10-28 12:00+0000\n"
+"PO-Revision-Date: 2026-10-28 12:00+0000\n"
+"Last-Translator: Antigravity <support@pkp.sfu.ca>\n"
+"Language-Team: English <support@pkp.sfu.ca>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+msgid "plugins.generic.inPressPlugin.displayName"
+msgstr "Articles In Press"
+
+msgid "plugins.generic.inPressPlugin.description"
+msgstr "Display peer-reviewed accepted articles that are not yet published, scheduled for upcoming issues (Articles in Press / Ahead of Print)."
+
+msgid "plugins.generic.inPressPlugin.pageTitle"
+msgstr "Articles In Press"
+
+msgid "plugins.generic.inPressPlugin.badgeText"
+msgstr "In Press"
+
+msgid "plugins.generic.inPressPlugin.proofNotice"
+msgstr "Uncorrected Proof"
+
+msgid "plugins.generic.inPressPlugin.introNotice"
+msgstr "The following articles have been peer-reviewed and accepted for publication. They are scheduled to appear in an upcoming issue. These manuscripts are provided for early dissemination and may undergo minor copyediting and typesetting before final issue publication."
+
+msgid "plugins.generic.inPressPlugin.toAppearIn"
+msgstr "To appear in"
+
+msgid "plugins.generic.inPressPlugin.futureIssue"
+msgstr "Upcoming Issue"
+
+msgid "plugins.generic.inPressPlugin.dateAccepted"
+msgstr "Accepted"
+
+msgid "plugins.generic.inPressPlugin.dateSubmitted"
+msgstr "Submitted"
+
+msgid "plugins.generic.inPressPlugin.doi"
+msgstr "DOI"
+
+msgid "plugins.generic.inPressPlugin.downloadProof"
+msgstr "Download Proof"
+
+msgid "plugins.generic.inPressPlugin.viewArticle"
+msgstr "Article Details"
+
+msgid "plugins.generic.inPressPlugin.noArticles"
+msgstr "There are currently no articles in press. Please check back soon or browse our published issues."
+
+msgid "plugins.generic.inPressPlugin.readMore"
+msgstr "Read more"
+
+msgid "plugins.generic.inPressPlugin.readLess"
+msgstr "Show less"
+
+msgid "plugins.generic.inPressPlugin.howToCite"
+msgstr "How to Cite (In Press)"
+
+msgid "plugins.generic.inPressPlugin.copyCitation"
+msgstr "Copy Citation"
+
+msgid "plugins.generic.inPressPlugin.copied"
+msgstr "Citation copied to clipboard!"
+
+msgid "plugins.generic.inPressPlugin.filterBySection"
+msgstr "Filter by section"
+
+msgid "plugins.generic.inPressPlugin.allSections"
+msgstr "All Sections"
+
+msgid "plugins.generic.inPressPlugin.searchPlaceholder"
+msgstr "Filter articles by title, author, or keyword..."
+
+msgid "plugins.generic.inPressPlugin.viewAll"
+msgstr "View All In-Press Articles"
+
+msgid "plugins.generic.inPressPlugin.feedTitle"
+msgstr "Articles In Press RSS Feed"
+
+msgid "plugins.generic.inPressPlugin.navMenuItem"
+msgstr "In Press"
+
+msgid "plugins.generic.inPressPlugin.navMenuItem.description"
+msgstr "Link to the In Press articles listing page"
+
+msgid "plugins.generic.inPressPlugin.settings.title"
+msgstr "In Press Plugin Settings"
+
+msgid "plugins.generic.inPressPlugin.settings.description"
+msgstr "Configure how forthcoming articles are identified, organized, and presented to readers."
+
+msgid "plugins.generic.inPressPlugin.settings.enabled"
+msgstr "Enable In Press public page and features"
+
+msgid "plugins.generic.inPressPlugin.settings.pageTitle"
+msgstr "Page Title"
+
+msgid "plugins.generic.inPressPlugin.settings.badgeText"
+msgstr "Article Badge Label"
+
+msgid "plugins.generic.inPressPlugin.settings.introNotice"
+msgstr "Introductory Notice / Disclaimer Text"
+
+msgid "plugins.generic.inPressPlugin.settings.detectionMode"
+msgstr "Article Detection Mode"
+
+msgid "plugins.generic.inPressPlugin.settings.modeScheduled"
+msgstr "Articles scheduled in unpublished / future issues (Recommended)"
+
+msgid "plugins.generic.inPressPlugin.settings.modeProduction"
+msgstr "All accepted submissions in production stage not yet in a published issue"
+
+msgid "plugins.generic.inPressPlugin.settings.modeSpecific"
+msgstr "Articles assigned to a designated forthcoming issue"
+
+msgid "plugins.generic.inPressPlugin.settings.designatedIssue"
+msgstr "Designated Forthcoming Issue"
+
+msgid "plugins.generic.inPressPlugin.settings.designatedIssueSelect"
+msgstr "-- Select an unpublished issue --"
+
+msgid "plugins.generic.inPressPlugin.settings.showGalleys"
+msgstr "Allow downloading Galley Proofs (PDF / Other formats)"
+
+msgid "plugins.generic.inPressPlugin.settings.proofNotice"
+msgstr "Proof Disclaimer Label"
+
+msgid "plugins.generic.inPressPlugin.settings.showAbstract"
+msgstr "Show article abstract in list"
+
+msgid "plugins.generic.inPressPlugin.settings.showExpectedIssue"
+msgstr "Show expected future issue information"
+
+msgid "plugins.generic.inPressPlugin.settings.showAcceptanceDate"
+msgstr "Show acceptance date"
+
+msgid "plugins.generic.inPressPlugin.settings.showDoi"
+msgstr "Show DOI link if assigned"
+
+msgid "plugins.generic.inPressPlugin.settings.showOnHomepage"
+msgstr "Display In Press block on journal homepage"
+
+msgid "plugins.generic.inPressPlugin.settings.homepageItemCount"
+msgstr "Number of in-press articles to show on homepage"
+
+msgid "plugins.generic.inPressPlugin.settings.enableFeed"
+msgstr "Enable RSS Feed for In Press articles"
+
+msgid "plugins.generic.inPressPlugin.settings.saved"
+msgstr "In Press settings saved successfully."

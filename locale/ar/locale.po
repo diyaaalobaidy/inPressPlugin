@@ -1,0 +1,155 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: InPressPlugin\n"
+"POT-Creation-Date: 2026-10-28 12:00+0000\n"
+"PO-Revision-Date: 2026-10-28 12:00+0000\n"
+"Last-Translator: Antigravity <support@pkp.sfu.ca>\n"
+"Language-Team: Arabic <support@pkp.sfu.ca>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+
+msgid "plugins.generic.inPressPlugin.displayName"
+msgstr "المقالات قيد النشر (In Press)"
+
+msgid "plugins.generic.inPressPlugin.description"
+msgstr "عرض المقالات المقبولة والمحكمة الجاهزة للنشر في أعداد مستقبلية قادمة (Articles in Press / Ahead of Print)."
+
+msgid "plugins.generic.inPressPlugin.pageTitle"
+msgstr "مقالات قيد النشر"
+
+msgid "plugins.generic.inPressPlugin.badgeText"
+msgstr "قيد النشر"
+
+msgid "plugins.generic.inPressPlugin.proofNotice"
+msgstr "مسودة غير مصححة"
+
+msgid "plugins.generic.inPressPlugin.introNotice"
+msgstr "المقالات المدرجة أدناه تمت مراجعتها وقبولها للنشر النهائي، وهي مجدولة للظهور في عدد قادم. يتم إتاحة هذه المسودات لتعزيز النشر المبكر والاطلاع العلمي، وقد تخضع لتدقيق لغوي وتنسيقي إضافي قبل صدور العدد الرسمي."
+
+msgid "plugins.generic.inPressPlugin.toAppearIn"
+msgstr "سيُنشر في"
+
+msgid "plugins.generic.inPressPlugin.futureIssue"
+msgstr "عدد قادم"
+
+msgid "plugins.generic.inPressPlugin.dateAccepted"
+msgstr "تاريخ القبول"
+
+msgid "plugins.generic.inPressPlugin.dateSubmitted"
+msgstr "تاريخ الإرسال"
+
+msgid "plugins.generic.inPressPlugin.doi"
+msgstr "معرف الكائن الرقمي (DOI)"
+
+msgid "plugins.generic.inPressPlugin.downloadProof"
+msgstr "تحميل المسودة"
+
+msgid "plugins.generic.inPressPlugin.viewArticle"
+msgstr "تفاصيل المقال"
+
+msgid "plugins.generic.inPressPlugin.noArticles"
+msgstr "لا توجد مقالات قيد النشر حالياً. يرجى المتابعة لاحقاً أو تصفح الأعداد المنشورة."
+
+msgid "plugins.generic.inPressPlugin.readMore"
+msgstr "قراءة المزيد"
+
+msgid "plugins.generic.inPressPlugin.readLess"
+msgstr "إخفاء"
+
+msgid "plugins.generic.inPressPlugin.howToCite"
+msgstr "كيفية الاقتباس (قيد النشر)"
+
+msgid "plugins.generic.inPressPlugin.copyCitation"
+msgstr "نسخ الاقتباس"
+
+msgid "plugins.generic.inPressPlugin.copied"
+msgstr "تم نسخ الاقتباس إلى الحافظة!"
+
+msgid "plugins.generic.inPressPlugin.filterBySection"
+msgstr "تصفية حسب القسم"
+
+msgid "plugins.generic.inPressPlugin.allSections"
+msgstr "كافة الأقسام"
+
+msgid "plugins.generic.inPressPlugin.searchPlaceholder"
+msgstr "ابحث بالعنوان، المؤلف، أو الكلمات المفتاحية..."
+
+msgid "plugins.generic.inPressPlugin.viewAll"
+msgstr "عرض كافة المقالات قيد النشر"
+
+msgid "plugins.generic.inPressPlugin.feedTitle"
+msgstr "تغذية RSS للمقالات قيد النشر"
+
+msgid "plugins.generic.inPressPlugin.navMenuItem"
+msgstr "مقالات قيد النشر"
+
+msgid "plugins.generic.inPressPlugin.navMenuItem.description"
+msgstr "رابط لصفحة المقالات المقبولة قيد النشر"
+
+msgid "plugins.generic.inPressPlugin.settings.title"
+msgstr "إعدادات إضافة المقالات قيد النشر"
+
+msgid "plugins.generic.inPressPlugin.settings.description"
+msgstr "تخصيص معايير تحديد المقالات قيد النشر وطريقة تنظيمها وعرضها للقرّاء."
+
+msgid "plugins.generic.inPressPlugin.settings.enabled"
+msgstr "تفعيل صفحة المقالات قيد النشر والميزات التابعة لها"
+
+msgid "plugins.generic.inPressPlugin.settings.pageTitle"
+msgstr "عنوان الصفحة"
+
+msgid "plugins.generic.inPressPlugin.settings.badgeText"
+msgstr "نص الشارة للمقال"
+
+msgid "plugins.generic.inPressPlugin.settings.introNotice"
+msgstr "التنويه التمهيدي / إخلاء المسؤولية"
+
+msgid "plugins.generic.inPressPlugin.settings.detectionMode"
+msgstr "آلية تحديد المقالات قيد النشر"
+
+msgid "plugins.generic.inPressPlugin.settings.modeScheduled"
+msgstr "المقالات المجدولة في أعداد قادمة / غير منشورة (موصى به)"
+
+msgid "plugins.generic.inPressPlugin.settings.modeProduction"
+msgstr "كافة المقالات المقبولة في مرحلة الإنتاج ولم تُنشر بعد في عدد رسمي"
+
+msgid "plugins.generic.inPressPlugin.settings.modeSpecific"
+msgstr "المقالات المخصصة لعدد قادم محدد"
+
+msgid "plugins.generic.inPressPlugin.settings.designatedIssue"
+msgstr "العدد القادم المخصص"
+
+msgid "plugins.generic.inPressPlugin.settings.designatedIssueSelect"
+msgstr "-- اختر عدداً غير منشور --"
+
+msgid "plugins.generic.inPressPlugin.settings.showGalleys"
+msgstr "إتاحة تحميل ملفات المسودات (PDF / تنسيقات أخرى)"
+
+msgid "plugins.generic.inPressPlugin.settings.proofNotice"
+msgstr "تنويه ملف المسودة"
+
+msgid "plugins.generic.inPressPlugin.settings.showAbstract"
+msgstr "إظهار المستخلص في القائمة"
+
+msgid "plugins.generic.inPressPlugin.settings.showExpectedIssue"
+msgstr "إظهار تفاصيل العدد المتوقع (المجلد / العدد / السنة)"
+
+msgid "plugins.generic.inPressPlugin.settings.showAcceptanceDate"
+msgstr "إظهار تاريخ القبول"
+
+msgid "plugins.generic.inPressPlugin.settings.showDoi"
+msgstr "إظهار رابط المعرف الرقمي (DOI) إن وجد"
+
+msgid "plugins.generic.inPressPlugin.settings.showOnHomepage"
+msgstr "عرض قسم المقالات قيد النشر بالصفحة الرئيسية للمجلة"
+
+msgid "plugins.generic.inPressPlugin.settings.homepageItemCount"
+msgstr "عدد المقالات المعروضة في الصفحة الرئيسية"
+
+msgid "plugins.generic.inPressPlugin.settings.enableFeed"
+msgstr "تفعيل تغذية RSS للمقالات قيد النشر"
+
+msgid "plugins.generic.inPressPlugin.settings.saved"
+msgstr "تم حفظ إعدادات المقالات قيد النشر بنجاح."
